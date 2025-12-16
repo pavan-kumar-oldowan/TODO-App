@@ -8,14 +8,17 @@ type Task = {
 type TaskItemProps = {
   task: Task;
   onDelete: (id: string) => void;
+  onToggleComplete:(id:string)=>void;
 };
 
-const TaskItem:React.FC<TaskItemProps> =({task,onDelete})=>{
+const TaskItem:React.FC<TaskItemProps> =({task,onDelete ,onToggleComplete})=>{
       return (
          <View style={styles.container}>
+            <TouchableOpacity onPress={() => onToggleComplete(task.id)} style={{ flex: 1 }}>
              <Text style={[styles.text, task.completed && styles.completed]}>
                 {task.title}
              </Text>
+             </TouchableOpacity>
              <TouchableOpacity style={styles.delete} onPress={()=>onDelete(task.id)}>
                 <Text style={styles.deleteText}>Delete</Text>
              </TouchableOpacity>
