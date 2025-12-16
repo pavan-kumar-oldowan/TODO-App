@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import {View,Text,StyleSheet,FlatList} from "react-native";
 import ADDTask from "@/components/AddTask"
 //import { FlatList } from "react-native-reanimated/lib/typescript/Animated";
 import TaskItem from "@/components/TaskItem";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 interface Task{
      id:string,
      title:string,
@@ -11,6 +11,30 @@ interface Task{
   }
 export default function App(){
    const [tasks,setTasks]=useState<Task[]>([]);
+   // Save the task in AsyncStorage whenever task change
+   useEffect(()=>{
+    const saveTask = async()=>{
+       try{
+        await AsyncStorage.setItem("tasks",JSON.stringify(tasks))
+       }catch(e){
+        console.log("Error Svaing Tasks",e)
+       }
+      }
+      saveTask();
+   },[tasks])
+   
+   // Load Task when app is run
+   useEffect(()=>{
+     const loadTask= async()=>{
+      try{
+       const load = await AsyncStorage.getItem("tasks");
+       if(load)setTasks(JSON.parse(load))
+      }catch(e){
+        console.log("Error loading tasks",e)
+      }
+      loadTask();
+     }
+   },[])
   // Adding Task
    const Add= (task: string):void=>{
      const newtask = {id:Date.now().toString(),title:task,completed:false}
