@@ -2,41 +2,49 @@ import React, { useState } from "react";
 import {View,Text,StyleSheet,FlatList} from "react-native";
 import ADDTask from "@/components/AddTask"
 //import { FlatList } from "react-native-reanimated/lib/typescript/Animated";
+import TaskItem from "@/components/TaskItem";
 
-interface task{
+interface Task{
      id:string,
      title:string,
+     completed:boolean
   }
 export default function App(){
-   const [tasks,settasks]=useState<task[]>([]);
- 
-   const AddTask= (task: string)=>{
-     console.log(tasks);
-     const newtask = {id:Date.now().toString(),title:task}
-     settasks([...tasks,newtask]);
-     console.log(tasks)
+   const [tasks,setTasks]=useState<Task[]>([]);
+  // Adding Task
+   const Add= (task: string):void=>{
+     const newtask = {id:Date.now().toString(),title:task,completed:false}
+     setTasks(prevTasks=>[...prevTasks,newtask]);
    }
+  //DeleteTask
+   const DeleteTask = (id:string)=>{
+      setTasks(prevTasks=>prevTasks.filter(task=>task.id!==id))
+   }
+
   return(
     <View style={styles.container}>
-      <ADDTask onAdd={AddTask}/>
-      <Text style={styles.title}>Todo App</Text>
-      <FlatList 
+       <Text style={styles.title}>Todo App</Text>
+       <ADDTask onAdd={Add}/>
+       <FlatList 
            data={tasks}
            keyExtractor={(item)=>item.id}
-           renderItem={({item})=><Text>{item.title}</Text>}
-           />
+           renderItem={({item})=>(
+           <TaskItem task={item} onDelete={DeleteTask}/>
+          )}
+          />
     </View>
   )
 }
 const styles= StyleSheet.create({
       container:{
         flex:1,
-        justifyContent:"center",
-        alignItems:"center",
+        padding:20
       },
       title:{
         fontSize:28,
-        textAlign:"center"
+        textAlign:"center",
+        fontWeight:"bold",
+        marginBottom:20
       }
 
 })
