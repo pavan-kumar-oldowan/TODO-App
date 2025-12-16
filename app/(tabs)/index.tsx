@@ -20,7 +20,13 @@ export default function App(){
    const DeleteTask = (id:string)=>{
       setTasks(prevTasks=>prevTasks.filter(task=>task.id!==id))
    }
-
+ // Toggle
+  const toggleComplete =(id:string)=>
+  {
+     setTasks(prevTasks=>
+        prevTasks.map(task=>
+       task.id===id ? {...task,completed:!task.completed} : task))
+  }
   return(
     <View style={styles.container}>
        <Text style={styles.title}>Todo App</Text>
@@ -29,7 +35,7 @@ export default function App(){
            data={tasks}
            keyExtractor={(item)=>item.id}
            renderItem={({item})=>(
-           <TaskItem task={item} onDelete={DeleteTask}/>
+           <TaskItem task={item} onDelete={DeleteTask} onToggleComplete={toggleComplete}/>
           )}
           />
     </View>
